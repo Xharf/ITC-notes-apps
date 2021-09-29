@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\NotesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('login', [ApiController::class, 'authenticate']);
+Route::post('register', [ApiController::class, 'register']);
+
+
+Route::group(['middleware' => ['jwt.verify']], function () {
+    Route::get('logout', [ApiController::class, 'logout']);
+    Route::get('get_user', [ApiController::class, 'get_user']);
+    Route::resource('notes', NotesController::class);
 });
-
-
-// Route::resource('notes', NoteController::class);
